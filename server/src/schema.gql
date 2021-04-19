@@ -1,0 +1,60 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateWorkoutInput {
+  date: DateTime!
+  exercise: String!
+  moves: [MoveUnitInput!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Exercise {
+  _id: String!
+  image: String!
+  moves(populate: Boolean!): [Move!]!
+  name: String!
+}
+
+type Move {
+  _id: String!
+  difficulty: Int!
+  name: String!
+}
+
+type MoveUnit {
+  move: Move!
+  reps: [Int!]!
+}
+
+input MoveUnitInput {
+  move: String!
+  reps: [Int!]!
+}
+
+type Mutation {
+  createWorkout(createWorkoutInput: CreateWorkoutInput!): Workout!
+}
+
+type Query {
+  exercise(id: ID!): Exercise
+  exercises: [Exercise!]
+  latestWorkout(exerciseId: String!, workoutId: ID): Workout
+  move(id: Int!): Move
+  moves: [Move!]
+  workout(workoutId: ID!): Workout
+}
+
+type Workout {
+  _id: String!
+  date: DateTime!
+  exercise(populate: Boolean!): Exercise!
+  googleId: String!
+  moves: [MoveUnit!]!
+  next: String
+  previous: String
+}

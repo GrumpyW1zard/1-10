@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: fitness_app
+    image: fitness_app
+    ports:
+      - "5000:5000"
+    build: 
+      context: ./app
+    environment: 
+      TZ: Europe/Prague
+      ENV: "${NODE_ENV}"
+    volumes:
+      - "./app:/app"
+    networks:
+      - fitness_network
+
+  server:
+    container_name: fitness_server
+    image: fitness_server
+    ports:
+      - "3000:3000"
+    build:
+      context: ./server
+    environment: 
+      TZ: Europe/Prague
+      NODE_ENV: "${NODE_ENV}"
+      MONGO_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_HOST: ${MONGO_HOST}
+      MONGO_PROTOCOL: ${MONGO_PROTOCOL}
+    volumes:
+      - "./server/:/server"
+    networks:
+      - fitness_network
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    networks:
+      - fitness_network
+    volumes:
+      - ${PWD}/mongo:/data/db
+
+networks:
+  fitness_network:
+    name: fitness_network
